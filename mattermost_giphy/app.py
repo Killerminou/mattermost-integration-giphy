@@ -67,7 +67,7 @@ def new_post():
 
         motivation = random.choice(phrase)
         #resp_data['text'] = motivation
-        resp_data['text'] = '''`{}` asked for motivation :\n
+        resp_data['text'] = '''`{}` asked for boobs :\n
     {}'''.format(data.get('user_name').title(), motivation)
     except Exception as err:
         msg = err.message
