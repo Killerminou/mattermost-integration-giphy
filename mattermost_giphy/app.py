@@ -1,3 +1,16 @@
+Skip to content
+Personal Open source Business Explore
+Sign upSign inPricingBlogSupport
+This repository
+Search
+ Watch 0  Star 0  Fork 60 randomting/mattermost-integration-giphy
+forked from numberly/mattermost-integration-giphy
+ Code  Pull requests 0  Pulse  Graphs
+Branch: master Find file Copy pathmattermost-integration-giphy/mattermost_giphy/app.py
+7f08af1  18 days ago
+@randomting randomting Update app.py
+2 contributors @randomting @Lujeni
+RawBlameHistory     79 lines (65 sloc)  2.3 KB
 # -*- coding: utf-8 -*-
 import logging
 import os
@@ -7,6 +20,7 @@ from urlparse import urlsplit
 from urlparse import urlunsplit
 
 import requests
+import random
 from flask import Flask
 from flask import request
 from flask import Response
@@ -19,21 +33,39 @@ logging.basicConfig(
 app = Flask(__name__)
 
 
-@app.route('/')
+phrase = ['https://media4.giphy.com/media/Jp5yOwzJL8oMM/giphy.gif',
+'http://media4.giphy.com/media/Wy0Pqicf1N21i/giphy.gif',
+'http://media4.giphy.com/media/12MjqLSQ2wDER2/giphy.gif',
+'https://media4.giphy.com/media/QgZOTNx3clTzO/giphy.gif',
+'https://media4.giphy.com/media/Gxk0jI06myhpu/giphy.gif',
+'https://media4.giphy.com/media/wWEoKRRgmFH20/giphy.gif',
+'https://media4.giphy.com/media/EKNJZk5gH6QXC/giphy.gif',
+'https://media4.giphy.com/media/PVhrCQyyGzAru/giphy.gif',
+'https://media4.giphy.com/media/Hp8jtPPTWiH7O/giphy.gif',
+'https://media4.giphy.com/media/v40h5Z4X7aLVS/giphy.gif',
+'https://media4.giphy.com/media/tpWcdE3dopRhS/giphy.gif',
+'https://media4.giphy.com/media/1266sbyhJZwgyk/giphy.gif',
+'https://media4.giphy.com/media/rAKdqZ8nfiaZi/giphy.gif',
+'https://media4.giphy.com/media/8ztjJmHGY8tva/giphy.gif',
+]
+
+
+
+@app.route('/new_post')
 def root():
     """
     Home handler
     """
-
+    print "la" 
     return "OK"
 
-
-@app.route('/new_post', methods=['POST'])
+@app.route('/', methods=['POST'])
 def new_post():
     """
     Mattermost new post event handler
     """
     try:
+        print "ici"
         # NOTE: common stuff
         slash_command = False
         resp_data = {}
@@ -45,27 +77,18 @@ def new_post():
         if not 'token' in data:
             raise Exception('Missing necessary token in the post data')
 
-        if MATTERMOST_GIPHY_TOKEN.find(data['token']) == -1:
-            raise Exception('Tokens did not match, it is possible that this request came from somewhere other than Mattermost')
+        #if MATTERMOST_GIPHY_TOKEN.find(data['token']) == -1:
+        #    raise Exception('Tokens did not match, it is possible that this request came from somewhere other than Mattermost')
 
         # NOTE: support the slash command
         if 'command' in data:
             slash_command = True
             resp_data['response_type'] = 'in_channel'
 
-        translate_text = data['text']
-        if not slash_command:
-            translate_text = data['text'][len(data['trigger_word']):]
-
-        if not translate_text:
-            raise Exception("No translate text provided, not hitting Giphy")
-
-        gif_url = giphy_translate(translate_text)
-        if not gif_url:
-            raise Exception('No gif url found for `{}`'.format(translate_text))
-
-        resp_data['text'] = '''`{}` searched for {}
-    {}'''.format(data.get('user_name', 'unknown').title(), translate_text, gif_url)
+        motivation = random.choice(phrase)
+        #resp_data['text'] = motivation
+        resp_data['text'] = '''`{}` asked for motivation :\n
+    {}'''.format(data.get('user_name').title(), motivation)
     except Exception as err:
         msg = err.message
         logging.error('unable to handle new post :: {}'.format(msg))
@@ -74,30 +97,5 @@ def new_post():
         resp = Response(content_type='application/json')
         resp.set_data(json.dumps(resp_data))
         return resp
-
-
-def giphy_translate(text):
-    """
-    Giphy translate method, uses the Giphy API to find an appropriate gif url
-    """
-    try:
-        params = {}
-        params['s'] = text
-        params['rating'] = RATING
-        params['api_key'] = GIPHY_API_KEY
-
-        resp = requests.get('{}://api.giphy.com/v1/gifs/translate'.format(SCHEME), params=params, verify=True)
-
-        if resp.status_code is not requests.codes.ok:
-            logging.error('Encountered error using Giphy API, text=%s, status=%d, response_body=%s' % (text, resp.status_code, resp.json()))
-            return None
-
-        resp_data = resp.json()
-
-        url = list(urlsplit(resp_data['data']['images']['original']['url']))
-        url[0] = SCHEME.lower()
-
-        return urlunsplit(url)
-    except Exception as err:
-        logging.error('unable to translate giphy :: {}'.format(err))
-        return None
+Contact GitHub API Training Shop Blog About
+© 2016 GitHub, Inc. Terms Privacy Security Status Help
