@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 import logging
 import os
@@ -20,24 +19,16 @@ logging.basicConfig(
     level=logging.INFO, format='[%(asctime)s] [%(levelname)s] %(message)s')
 app = Flask(__name__)
 
-
-phrase = ['https://media4.giphy.com/media/Jp5yOwzJL8oMM/giphy.gif',
-'http://media4.giphy.com/media/Wy0Pqicf1N21i/giphy.gif',
-'http://media4.giphy.com/media/12MjqLSQ2wDER2/giphy.gif',
-'https://media4.giphy.com/media/QgZOTNx3clTzO/giphy.gif',
-'https://media4.giphy.com/media/Gxk0jI06myhpu/giphy.gif',
-'https://media4.giphy.com/media/wWEoKRRgmFH20/giphy.gif',
-'https://media4.giphy.com/media/EKNJZk5gH6QXC/giphy.gif',
+phrase = ['https://media4.giphy.com/media/Jp5yOwzJL8oMM/giphy.gif','http://media4.giphy.com/media/Wy0Pqicf1N21i/giphy.gif','http://media4.giphy.com/media/12MjqLSQ2wDER2/giphy.gif','https://media4.giphy.com/media/QgZOTNx3clTzO/giphy.gif',
+'https://media4.giphy.com/media/Gxk0jI06myhpu/giphy.gif','https://media4.giphy.com/media/wWEoKRRgmFH20/giphy.gif','https://media4.giphy.com/media/EKNJZk5gH6QXC/giphy.gif',
 'https://media4.giphy.com/media/PVhrCQyyGzAru/giphy.gif',
 'https://media4.giphy.com/media/Hp8jtPPTWiH7O/giphy.gif',
 'https://media4.giphy.com/media/v40h5Z4X7aLVS/giphy.gif',
 'https://media4.giphy.com/media/tpWcdE3dopRhS/giphy.gif',
 'https://media4.giphy.com/media/1266sbyhJZwgyk/giphy.gif',
 'https://media4.giphy.com/media/rAKdqZ8nfiaZi/giphy.gif',
-'https://media4.giphy.com/media/8ztjJmHGY8tva/giphy.gif',
+'https://media4.giphy.com/media/8ztjJmHGY8tva/giphy.gif'
 ]
-
-
 
 @app.route('/new_post')
 def root():
@@ -46,6 +37,7 @@ def root():
     """
     print "la" 
     return "OK"
+
 
 @app.route('/', methods=['POST'])
 def new_post():
@@ -85,5 +77,3 @@ def new_post():
         resp = Response(content_type='application/json')
         resp.set_data(json.dumps(resp_data))
         return resp
-Contact GitHub API Training Shop Blog About
-© 2016 GitHub, Inc. Terms Privacy Security Status Help
